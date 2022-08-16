@@ -32,7 +32,7 @@
 <hr>
 
 # ⚙️ _**Steps For Installation :**_
-- **Open Command Prompt as an `Administrative `**
+- **Open Command Prompt as an `Administrator`**
 - **Change Directory to following path :**
 
   ```cmd
