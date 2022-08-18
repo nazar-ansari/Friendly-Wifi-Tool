@@ -204,3 +204,48 @@ IF %ERRORLEVEL% EQU 0 (
 )
 
 @REM
+
+::                                  Function To Show Cache PASSWORD OF The Selected Profile from The System
+:ShowPassword
+NETSH WLAN SHOW PROFILE NAME="!PROFILE[%UserChoice%]!" key=clear | FINDSTR /I CONTENT >>PASS.TXT
+FOR /F "TOKENS=4 DELIMS= " %%A IN (PASS.TXT) DO (SET ProfilePassword="%%A" )
+DEL PASS.TXT
+CLS
+COLOR 0E
+ECHO.
+ECHO             ----------------------------------------------
+ECHO               The PASSWORD of "!PROFILE[%UserChoice%]!" is %ProfilePassword%
+ECHO             ----------------------------------------------
+ECHO.
+IF EXIST "NULL" DEL NULL
+PAUSE >NULL
+GOTO :ProgramExit
+
+@REM
+
+::                                  Function To Make a Connection To The Selected Profile
+:Connection
+CLS
+ECHO.
+NETSH WLAN DISCONNECT >NULL
+ECHO.
+NETSH WLAN CONNECT NAME="!PROFILE[%UserChoice%]!" SSID="!PROFILE[%UserChoice%]!" INTERFACE=Wi-Fi >NULL
+IF %ERRORLEVEL% EQU 0 (
+ECHO.
+ECHO         Successfully Connected To "!PROFILE[%UserChoice%]!"
+ECHO.
+IF EXIST "NULL" DEL NULL
+PAUSE >NULL
+GOTO :ProgramExit) ELSE (
+    CLS
+    COLOR 7C
+    ECHO.
+    ECHO            "!PROFILE[%UserChoice%]!" Is Not Available To CONNECT .
+    ECHO.
+    DEL NULL
+    PAUSE >NULL
+    EXIT /B 0
+)
+DEL NULL
+
+@REM
