@@ -70,3 +70,39 @@ IF EXIST "NULL" DEL NULL
 PAUSE >NULL
 GOTO :ProgramExit
 )
+
+::                              Program To Display Available Profiles In The System
+SET /A Array=1
+SET /A Iteration=1
+FOR /F "SKIP=1 TOKENS=2 DELIMS=:" %%G IN ('netsh wlan show profile ^| findstr /i :') DO (
+    CALL :Profiles "%%G"
+)
+SET /A Iteration-=1
+CLS
+ECHO.
+ECHO            **************  Available Profiles In The System  **************
+ECHO.
+FOR /L %%A IN (1,1,%Iteration%) DO (
+    ECHO                  ------------------------------------------------
+    ECHO                           {%%A}         !PROFILE[%%A]!         
+)
+FOR /L %%B IN (1,1,%Iteration%) DO (
+     FOR /F "TOKENS=* DELIMS= " %%C IN ("!PROFILE[%%B]!") DO (
+        SET PROFILE[%%B]=%%C
+     )
+)
+ECHO.
+ECHO.
+
+::                              Getting A value From User
+ECHO     ENTER The Number of Above Profile to Perform Operations :
+SET /P CHOICE=
+IF "%CHOICE%"=="" (
+    CLS
+    ECHO.
+    ECHO                          Invalid Response   S O R R Y
+    ECHO.
+    PAUSE >NULL
+    GOTO :ProgramExit
+) ELSE ( SET /A UserChoice=%CHOICE% )
+CLS
