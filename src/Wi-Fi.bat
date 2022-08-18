@@ -106,3 +106,44 @@ IF "%CHOICE%"=="" (
     GOTO :ProgramExit
 ) ELSE ( SET /A UserChoice=%CHOICE% )
 CLS
+
+::                                  Assigning The Profile Information As per Profile Array
+NETSH WLAN SHOW INTERFACE | FINDSTR /I "!PROFILE[%UserChoice%]!" >NULL
+IF %ERRORLEVEL% EQU 0 ( SET Status=Connected) ELSE ( SET Status=NOT Connected )
+ECHO.
+ECHO                   ***********    !PROFILE[%UserChoice%]!    **********
+ECHO.
+ECHO           --------------------------
+ECHO            STATUS :  "%Status%"
+ECHO           --------------------------
+ECHO.
+ECHO            Available Operation On This Network :
+ECHO.
+
+::                                  Statement To Check Whether The You Are Connected To Particular Profile or NOT
+IF "%Status%"=="Connected" (
+ECHO            { 1 }      ---   Disconnect This Network .) ELSE (
+ECHO            { 1 }      ---   Connect To This Network .
+)
+ECHO            { 2 }      ---   Show ( Cached ) PASSWORD For this Profile .
+ECHO            { 3 }      ---   Export This Profile .
+ECHO            { 4 }      ---   Delete These Profile From System .
+ECHO.
+
+::                                      To Direct The User Choice To Certain Operation
+ECHO      Enter Your Operation Choice :
+SET /P OperationChoice=
+IF %OperationChoice%==1 (
+    IF "%Status%"=="Connected" ( GOTO :Disconnect) ELSE (GOTO :Connection)
+    DEL NULL
+)
+IF %OperationChoice%==2 ( GOTO :ShowPassword )
+IF %OperationChoice%==3 ( GOTO :ExportProfile )
+IF %OperationChoice%==4 ( GOTO :DeleteProfile ) ELSE ( 
+    ECHO.
+    ECHO        -------------------
+    ECHO           INVALID OPTION      
+    ECHO        -------------------
+    PAUSE >NULL
+    GOTO :ProgramExit)
+@REM
