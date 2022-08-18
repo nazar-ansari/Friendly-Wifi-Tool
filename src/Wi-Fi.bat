@@ -147,3 +147,60 @@ IF %OperationChoice%==4 ( GOTO :DeleteProfile ) ELSE (
     PAUSE >NULL
     GOTO :ProgramExit)
 @REM
+
+::                              Function To Delete The Selected Profile 
+:DeleteProfile
+NETSH WLAN DELETE PROFILE NAME="!PROFILE[%UserChoice%]!" >NULL
+IF %ERRORLEVEL% EQU 0 (
+    CLS
+    ECHO.
+    ECHO            ----------------------------------------------------------
+    ECHO            Successfully Deleted The Profile "!PROFILE[%UserChoice%]!" From The System .
+    ECHO            ----------------------------------------------------------
+    ECHO.
+    IF EXIST "NULL" DEL NULL
+    PAUSE >NULL
+    GOTO :ProgramExit
+) ELSE (
+    CLS
+    COLOR 7C
+    ECHO.
+    ECHO            --------------------------------------------------------
+    ECHO            Unable To Delete The Profile "!PROFILE[%UserChoice%]!" S O R R Y Try Later .
+    ECHO            --------------------------------------------------------
+    ECHO.
+    PAUSE >NULL
+    GOTO :ProgramExit
+)
+
+@REM
+
+::                                  Function To Export The Selected Profile
+:ExportProfile
+DIR | FINDSTR /I "!PROFILE[%UserChoice%]!.XML" >NULL
+IF %ERRORLEVEL% EQU 0 (
+    CLS
+    ECHO.
+    ECHO        The Exported Profile of "!PROFILE[%UserChoice%]!" Already Exist in Working Directory . 
+    ECHO.
+    ECHO   -------------------------------------------------
+    DIR | FINDSTR /I "!PROFILE[%UserChoice%]!.xml" 
+    ECHO   -------------------------------------------------
+    ECHO.
+    IF EXIST "NULL" DEL NULL
+    PAUSE >NULL
+    GOTO :ProgramExit
+) ELSE (
+    NETSH WLAN EXPORT PROFILE NAME="!PROFILE[%UserChoice%]!" FOLDER=. >NULL
+    CLS
+    ECHO.
+    ECHO            --------------------------------------------------------
+    ECHO            Successfully Exported And Saved As "Wi-Fi-!PROFILE[%UserChoice%]!.xml" 
+    ECHO            --------------------------------------------------------
+    ECHO.
+    IF EXIST "NULL" DEL NULL
+    PAUSE >NULL
+    GOTO :ProgramExit
+)
+
+@REM
