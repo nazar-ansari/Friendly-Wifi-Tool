@@ -249,3 +249,27 @@ GOTO :ProgramExit) ELSE (
 DEL NULL
 
 @REM
+
+::                                  Function To Disconnect To The Selected Profile
+:Disconnect
+CLS
+NETSH WLAN DISCONNECT >NULL
+ECHO.
+ECHO        D I S C O N N E C T E D 
+ECHO.
+IF EXIST "NULL" DEL NULL
+PAUSE >NULL
+GOTO :ProgramExit
+
+@REM 
+
+::                                  Function to Assign the profile name into PROFILE ARRAY
+:Profiles
+SET PROFILE[%Array%]=%~1
+SET /A Array+=1
+SET /A Iteration+=1
+
+::                                  Function To Redirect to Exit
+:ProgramExit
+IF EXIST "NULL" DEL NULL
+
